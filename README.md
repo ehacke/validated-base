@@ -9,7 +9,13 @@
 
 Abstract validated base class using [class-validator](https://github.com/typestack/class-validator).
 
-# Install
+## Sponsor 
+
+![asserted.io](https://raw.githubusercontent.com/ehacke/validated-base/master/images/logo.png)
+
+[asserted.io - Test in Prod](https://asserted.io)
+
+## Install
 
 ```bash
 npm i -S validated-base
@@ -68,9 +74,3 @@ const validatedModel = new ValidatedClass({ bar: 10, foo: 'something', things: E
 // Throws exception if property is invalid
 const boom = new ValidatedClass({ bar: -1, foo: 'this-is-too-long', things: 'not-enum' });
 ``` 
-
-### Sponsor 
-
-![asserted.io](https://raw.githubusercontent.com/ehacke/validated-base/master/images/logo.png)
-
-[asserted.io - Test in Prod](https://asserted.io)
