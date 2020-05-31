@@ -1,13 +1,13 @@
 import { expect } from 'chai';
-import { enumError, ValidatedBase } from "../index";
-import { IsEnum, IsNumber, IsString, MaxLength, Min } from "class-validator";
+import { IsEnum, IsNumber, IsString, MaxLength, Min } from 'class-validator';
+
+import { enumError, ValidatedBase } from '..';
 
 describe('validated base unit tests', () => {
   it('sync validation', () => {
-
     enum ENUM_THINGS {
-      FIRST= 'first',
-      SECOND='second',
+      FIRST = 'first',
+      SECOND = 'second',
     }
 
     interface ValidatedClassInterface {
@@ -45,7 +45,9 @@ describe('validated base unit tests', () => {
 
     expect(created).to.eql({ bar: 10, foo: 'something', things: ENUM_THINGS.FIRST });
     expect(() => new ValidatedClass({ bar: -1, foo: 'something', things: ENUM_THINGS.FIRST })).to.throw('bar must not be less than 0');
-    expect(() => new ValidatedClass({ bar: 10, foo: 'something-something', things: ENUM_THINGS.FIRST })).to.throw('foo must be shorter than or equal to 10 characters');
+    expect(() => new ValidatedClass({ bar: 10, foo: 'something-something', things: ENUM_THINGS.FIRST })).to.throw(
+      'foo must be shorter than or equal to 10 characters'
+    );
     expect(() => new ValidatedClass({ bar: 10, foo: 'something', things: 'not enum' as any })).to.throw('things must be one of: first, second');
   });
 });

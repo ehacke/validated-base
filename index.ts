@@ -2,7 +2,7 @@ import { validate, validateSync, ValidatorOptions } from 'class-validator';
 import cleanDeep from 'clean-deep';
 import Err from 'err';
 import HTTP_STATUS from 'http-status';
-import { omit, isObject } from 'lodash';
+import { isObject, omit } from 'lodash';
 
 const getErrorStrings = (errors, base = ''): string[] => {
   return errors.reduce((result, { constraints = {}, children = [], property }) => {
@@ -29,10 +29,10 @@ const DEFAULT_VALIDATION_OPTIONS = {
  * @returns {string | undefined}
  */
 export const enumError = (entity: any): string | undefined => {
-  if (!isObject(entity)) return undefined;
+  if (!isObject(entity)) return;
+  // eslint-disable-next-line consistent-return
   return `$property must be one of: ${Object.values(entity).join(', ')}`;
 };
-
 
 /**
  * @class
