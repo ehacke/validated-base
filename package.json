@@ -1,0 +1,101 @@
+{
+  "name": "validated-base",
+  "description": "Abstract validated base class",
+  "version": "0.0.1",
+  "author": "Eric Hacke",
+  "bugs": {
+    "url": "https://github.com/ehacke/validated-base/issues"
+  },
+  "dependencies": {
+    "clean-deep": "^3.3.0",
+    "err": "^2.1.11",
+    "http-status": "^1.4.2",
+    "lodash": "^4.17.15"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@ehacke/commitlint-config": "^1.0.3",
+    "@ehacke/eslint-config": "^1.1.1",
+    "@ehacke/prettier-config": "^1.0.2",
+    "@istanbuljs/nyc-config-typescript": "^1.0.1",
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "^7.0.2",
+    "@typescript-eslint/eslint-plugin": "^3.0.2",
+    "@typescript-eslint/parser": "^3.0.2",
+    "chai": "^4.2.0",
+    "class-validator": "^0.12.2",
+    "commitizen": "^4.1.2",
+    "commitlint": "^8.3.5",
+    "cz-conventional-changelog": "^3.2.0",
+    "eslint": "^7.0.0",
+    "eslint-import-resolver-typescript": "^2.0.0",
+    "eslint-plugin-json": "^2.1.1",
+    "eslint-plugin-simple-import-sort": "^5.0.3",
+    "fixpack": "^3.0.6",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.4",
+    "mocha": "^7.1.2",
+    "nyc": "^15.0.1",
+    "prettier": "^2.0.5",
+    "prettier-eslint-cli": "^5.0.0",
+    "sinon": "^9.0.2",
+    "ts-node": "^8.10.1",
+    "typescript": "^3.9.3"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "files": [
+    "dist/**/*.{js,ts,tsbuildinfo}",
+    "docs/**/*.*"
+  ],
+  "homepage": "https://github.com/ehacke/validated-base#readme",
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
+  },
+  "keywords": [
+    "abstract",
+    "base",
+    "class",
+    "class-validator",
+    "model",
+    "validate",
+    "validation"
+  ],
+  "license": "MIT",
+  "lint-staged": {
+    "package.json": [
+      "fixpack"
+    ],
+    "*.{js,ts}": [
+      "prettier-eslint --write",
+      "eslint --fix"
+    ]
+  },
+  "main": "dist/src/index.js",
+  "peerDependencies": {
+    "class-validator": "^0.12.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ehacke/validated-base.git"
+  },
+  "scripts": {
+    "beta": "npm version prerelease && npm publish",
+    "build": "rm -rf ./dist && tsc && sed -i 's/\"files\":/\"_files\":/' dist/package.json",
+    "commit": "git-cz",
+    "lint": "fixpack && prettier-eslint --write && eslint --fix \"**/*.{js,ts}\"",
+    "major": "npm version major && npm publish",
+    "minor": "npm version minor && npm publish",
+    "patch": "npm version patch && npm publish",
+    "postpublish": "git push",
+    "prepare": "fixpack",
+    "prepublishOnly": "npm run build",
+    "test": "nyc mocha --recursive -r source-map-support/register -r ts-node/register --use_strict --exit \"tests/**/*.+(unit|it).+(ts|js)\" && npm run lint"
+  },
+  "types": "dist/src/index.d.ts"
+}
