@@ -1,11 +1,10 @@
 # validated-base
 
 ![npm](https://img.shields.io/npm/v/validated-base)
-![npm bundle size](https://img.shields.io/bundlephobia/min/validated-base)
+![install size](https://badgen.net/packagephobia/install/validated-base)
 ![Codecov](https://img.shields.io/codecov/c/gh/ehacke/validated-base)
 ![CircleCI](https://img.shields.io/circleci/build/github/ehacke/validated-base)
 ![NPM](https://img.shields.io/npm/l/validated-base)
-![Hackage-Deps](https://img.shields.io/hackage-deps/v/validated-base)
 
 Abstract validated base class using [class-validator](https://github.com/typestack/class-validator).
 
