@@ -75,7 +75,7 @@
       "eslint --fix"
     ]
   },
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
   "peerDependencies": {
     "class-validator": "^0.12.2"
   },
@@ -96,5 +96,5 @@
     "prepublishOnly": "npm run build",
     "test": "nyc mocha --recursive -r source-map-support/register -r ts-node/register --use_strict --exit \"tests/**/*.+(unit|it).+(ts|js)\" && npm run lint"
   },
-  "types": "dist/src/index.d.ts"
+  "types": "dist/index.d.ts"
 }
