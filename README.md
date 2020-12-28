@@ -3,7 +3,6 @@
 ![npm](https://img.shields.io/npm/v/validated-base)
 ![install size](https://badgen.net/packagephobia/install/validated-base)
 ![Codecov](https://img.shields.io/codecov/c/gh/ehacke/validated-base)
-![CircleCI](https://img.shields.io/circleci/build/github/ehacke/validated-base)
 ![GitHub](https://img.shields.io/github/license/ehacke/validated-base)
 
 Abstract validated base class using [class-validator](https://github.com/typestack/class-validator).
