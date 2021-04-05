@@ -1,3 +1,3 @@
 module.exports = {
-  extends: ['@ehacke/eslint-config-ts'],
+  extends: ['@gapizza/eslint-config-ts'],
 };
