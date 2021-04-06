@@ -7,12 +7,6 @@
 
 Abstract validated base class using [class-validator](https://github.com/typestack/class-validator).
 
-## Sponsor 
-
-![asserted.io](https://raw.githubusercontent.com/ehacke/validated-base/master/images/logo.png)
-
-[asserted.io - Test in Prod](https://asserted.io)
-
 ## Install
 
 ```bash

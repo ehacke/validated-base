@@ -6,10 +6,10 @@ import { isObject, omit } from 'lodash';
 
 const getErrorStrings = (errors, base = ''): string[] => {
   return errors.reduce((result, { constraints = {}, children = [], property }) => {
-    result = result.concat(Object.values(constraints).map((constraint) => base + constraint));
+    result = [...result, ...Object.values(constraints).map((constraint) => base + constraint)];
 
     if (children.length > 0) {
-      result = result.concat(getErrorStrings(children, (base += `${property}.`)));
+      result = [...result, ...getErrorStrings(children, (base += `${property}.`))];
     }
 
     return result;
