@@ -2,7 +2,43 @@ import { validate, validateSync, ValidatorOptions } from 'class-validator';
 import cleanDeep from 'clean-deep';
 import Err from 'err';
 import HTTP_STATUS from 'http-status';
-import { isObject, omit } from 'lodash';
+import { isObject, omit, isDate, isFunction, isNil, isNumber, isString } from 'lodash';
+import { DateTime } from 'luxon';
+
+export const stringNotDate = (input: any | string): input is string => {
+  return isString(input);
+};
+
+interface FirestoreTimestamp {
+  toDate(): Date;
+}
+
+export const firestoreTimestamp = (input: any | FirestoreTimestamp): input is FirestoreTimestamp => {
+  return isFunction((input as FirestoreTimestamp).toDate);
+};
+
+export const toDate = (input: Date | string | FirestoreTimestamp | DateTime | number): Date => {
+  if (isNil(input)) return new Date('');
+  if (isNumber(input))
+    return DateTime.fromMillis(input as number)
+      .toUTC()
+      .toJSDate();
+  if (isDate(input)) return DateTime.fromJSDate(input).toUTC().toJSDate();
+  if (firestoreTimestamp(input)) return DateTime.fromJSDate(input.toDate()).toJSDate();
+  if (DateTime.isDateTime(input)) return input.toJSDate();
+
+  return stringNotDate(input) ? DateTime.fromISO(input).toUTC().toJSDate() : input;
+};
+
+/**
+ * Strip unsupported characters
+ *
+ * @param {string} input
+ * @returns {string}
+ */
+export const cleanString = (input: string): string => {
+  return input.replace(/\s+/g, ' ').trim();
+};
 
 const getErrorStrings = (errors, base = ''): string[] => {
   return errors.reduce((result, { constraints = {}, children = [], property }) => {

@@ -1,7 +1,9 @@
 import { expect } from 'chai';
-import { IsEnum, IsNumber, IsString, MaxLength, Min } from 'class-validator';
+// import { DateTime } from 'luxon';
+import { isDateString, IsEnum, IsNumber, IsString, MaxLength, Min } from 'class-validator';
 
 import { enumError, ValidatedBase } from '..';
+import { toDate } from '../index';
 
 enum ENUM_THINGS {
   FIRST = 'first',
@@ -72,5 +74,25 @@ describe('validated base unit tests', () => {
   it('get json', () => {
     const created = new ValidatedClass({ bar: 10, foo: 'something', things: ENUM_THINGS.FIRST });
     expect(created.convertToJSON(['bar'])).to.eql({ foo: 'something', things: ENUM_THINGS.FIRST });
+  });
+});
+
+describe('toDate unit tests', () => {
+  it('valid dates', () => {
+    const date = new Date('2018-01-01T00:00:00Z');
+    expect(toDate('2018-01-01T00:00:00Z')).to.eql(date);
+    expect(toDate('2017-12-31T19:00:00.000-05:00')).to.eql(date);
+    expect(toDate(date)).to.eql(date);
+    expect(toDate(date.valueOf())).to.eql(date);
+    const mockFirestoreDate = { toDate: () => date };
+    expect(toDate(mockFirestoreDate)).to.eql(date);
+  });
+
+  it('invalid dates', () => {
+    expect(isDateString(toDate('2018-01-0100:00:00Z').toString())).to.eql(false);
+    expect(isDateString(toDate(null as any).toString())).to.eql(false);
+    expect(isDateString(toDate(9999999999999999).toString())).to.eql(false);
+    const badMockFirestoreDate = { toDate: () => 'foo' };
+    expect(isDateString(toDate(badMockFirestoreDate as any).toString())).to.eql(false);
   });
 });
