@@ -1,7 +1,7 @@
 {
   "name": "validated-base",
   "description": "Abstract validated base class",
-  "version": "1.2.1-0",
+  "version": "1.2.1",
   "author": "Eric Hacke",
   "bugs": {
     "url": "https://github.com/ehacke/validated-base/issues"
