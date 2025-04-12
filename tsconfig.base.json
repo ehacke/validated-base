@@ -1,17 +1,17 @@
 {
+  "exclude": [
+    "node_modules",
+    "./coverage",
+    "./scratch.*"
+  ],
   "compilerOptions": {
-    "allowJs": false,
-    "alwaysStrict": true,
-    "baseUrl": "./",
-    "declaration": true,
-    "emitDecoratorMetadata": true,
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
     "incremental": true,
+    "target": "es2019",
     "lib": [
       "es5",
       "es6",
       "dom",
+      "es2020",
       "es2015.core",
       "es2015.collection",
       "es2015.generator",
@@ -21,35 +21,37 @@
       "es2015.reflect",
       "es2015.symbol",
       "es2015.symbol.wellknown",
-      "esnext.asynciterable",
       "dom.iterable",
       "scripthost",
       "esnext",
       "esnext.asynciterable",
       "es2018"
     ],
-    "module": "commonjs",
+    "module": "ES2020",
     "moduleResolution": "node",
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": false,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "outDir": "./dist",
-    "resolveJsonModule": true,
+    "isolatedModules": true,
+
+    "allowJs": false,
     "sourceMap": true,
+    "outDir": "./dist",
     "strict": true,
-    "strictBindCallApply": true,
+    "noImplicitAny": false,
     "strictNullChecks": true,
-    "target": "es2019",
+    "strictBindCallApply": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+    "baseUrl": "./",
     "typeRoots": [
       "./node_modules/@types",
       "./types"
-    ]
-  },
-  "exclude": [
-    "node_modules",
-    "./coverage",
-    "./scratch.*"
-  ]
+    ],
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "declaration": true
+  }
 }

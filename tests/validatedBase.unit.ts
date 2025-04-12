@@ -1,9 +1,6 @@
 import { expect } from 'chai';
-// import { DateTime } from 'luxon';
 import { isDateString, IsEnum, IsNumber, IsString, MaxLength, Min } from 'class-validator';
-
-import { enumError, ValidatedBase } from '..';
-import { toDate } from '../index';
+import { enumError, ValidatedBase, toDate } from '../index';
 
 enum ENUM_THINGS {
   FIRST = 'first',
@@ -46,11 +43,26 @@ describe('validated base unit tests', () => {
     const created = new ValidatedClass({ bar: 10, foo: 'something', things: ENUM_THINGS.FIRST });
 
     expect(created).to.eql({ bar: 10, foo: 'something', things: ENUM_THINGS.FIRST });
-    expect(() => new ValidatedClass({ bar: -1, foo: 'something', things: ENUM_THINGS.FIRST })).to.throw('bar must not be less than 0');
+    expect(
+      () =>
+        new ValidatedClass({
+          bar: -1,
+          foo: 'something',
+          things: ENUM_THINGS.FIRST,
+        })
+    ).to.throw('bar must not be less than 0');
     expect(() => new ValidatedClass({ bar: 10, foo: 'something-something', things: ENUM_THINGS.FIRST })).to.throw(
       'foo must be shorter than or equal to 10 characters'
     );
-    expect(() => new ValidatedClass({ bar: 10, foo: 'something', things: 'not enum' as any })).to.throw('things must be one of: first, second');
+    expect(
+      () =>
+        new ValidatedClass({
+          bar: 10,
+          foo: 'something',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          things: 'not enum' as any,
+        })
+    ).to.throw('things must be one of: first, second');
   });
 
   it('async validation', async () => {
@@ -59,7 +71,16 @@ describe('validated base unit tests', () => {
     expect(async () => created.validateAsync()).to.not.throw();
     expect(created).to.eql({ bar: 10, foo: 'something', things: ENUM_THINGS.FIRST });
     expect(
-      await new ValidatedClass({ bar: -1, foo: 'something', things: ENUM_THINGS.FIRST }, false).validateAsync().catch((error) => error.message)
+      await new ValidatedClass(
+        {
+          bar: -1,
+          foo: 'something',
+          things: ENUM_THINGS.FIRST,
+        },
+        false
+      )
+        .validateAsync()
+        .catch((error) => error.message)
     ).to.eql('bar must not be less than 0');
     expect(
       await new ValidatedClass({ bar: 10, foo: 'something-something', things: ENUM_THINGS.FIRST }, false)
@@ -67,7 +88,17 @@ describe('validated base unit tests', () => {
         .catch((error) => error.message)
     ).to.eql('foo must be shorter than or equal to 10 characters');
     expect(
-      await new ValidatedClass({ bar: 10, foo: 'something', things: 'not enum' as any }, false).validateAsync().catch((error) => error.message)
+      await new ValidatedClass(
+        {
+          bar: 10,
+          foo: 'something',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          things: 'not enum' as any,
+        },
+        false
+      )
+        .validateAsync()
+        .catch((error) => error.message)
     ).to.eql('things must be one of: first, second');
   });
 
@@ -90,9 +121,11 @@ describe('toDate unit tests', () => {
 
   it('invalid dates', () => {
     expect(isDateString(toDate('2018-01-0100:00:00Z').toString())).to.eql(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect(isDateString(toDate(null as any).toString())).to.eql(false);
     expect(isDateString(toDate(9999999999999999).toString())).to.eql(false);
     const badMockFirestoreDate = { toDate: () => 'foo' };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect(isDateString(toDate(badMockFirestoreDate as any).toString())).to.eql(false);
   });
 });

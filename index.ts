@@ -2,32 +2,32 @@ import { validate, validateSync, ValidatorOptions } from 'class-validator';
 import cleanDeep from 'clean-deep';
 import Err from 'err';
 import HTTP_STATUS from 'http-status';
-import { isObject, omit, isDate, isFunction, isNil, isNumber, isString } from 'lodash';
+import { isObject, omit, isDate, isFunction, isNil, isNumber, isString } from 'lodash-es';
 import { DateTime } from 'luxon';
 
-export const stringNotDate = (input: any | string): input is string => {
-  return isString(input);
+export const stringNotDate = (input: unknown | string): input is string => {
+	return isString(input);
 };
 
 interface FirestoreTimestamp {
-  toDate(): Date;
+	toDate(): Date;
 }
 
-export const firestoreTimestamp = (input: any | FirestoreTimestamp): input is FirestoreTimestamp => {
-  return isFunction((input as FirestoreTimestamp).toDate);
+export const firestoreTimestamp = (input: unknown | FirestoreTimestamp): input is FirestoreTimestamp => {
+	return isFunction((input as FirestoreTimestamp).toDate);
 };
 
 export const toDate = (input: Date | string | FirestoreTimestamp | DateTime | number): Date => {
-  if (isNil(input)) return new Date('');
-  if (isNumber(input))
-    return DateTime.fromMillis(input as number)
-      .toUTC()
-      .toJSDate();
-  if (isDate(input)) return DateTime.fromJSDate(input).toUTC().toJSDate();
-  if (firestoreTimestamp(input)) return DateTime.fromJSDate(input.toDate()).toJSDate();
-  if (DateTime.isDateTime(input)) return input.toJSDate();
+	if (isNil(input)) return new Date('');
+	if (isNumber(input))
+		return DateTime.fromMillis(input as number)
+			.toUTC()
+			.toJSDate();
+	if (isDate(input)) return DateTime.fromJSDate(input).toUTC().toJSDate();
+	if (firestoreTimestamp(input)) return DateTime.fromJSDate(input.toDate()).toJSDate();
+	if (DateTime.isDateTime(input)) return input.toJSDate();
 
-  return stringNotDate(input) ? DateTime.fromISO(input).toUTC().toJSDate() : input;
+	return stringNotDate(input) ? DateTime.fromISO(input).toUTC().toJSDate() : input;
 };
 
 /**
@@ -37,25 +37,25 @@ export const toDate = (input: Date | string | FirestoreTimestamp | DateTime | nu
  * @returns {string}
  */
 export const cleanString = (input: string): string => {
-  return input.replace(/\s+/g, ' ').trim();
+	return input.replace(/\s+/g, ' ').trim();
 };
 
 const getErrorStrings = (errors, base = ''): string[] => {
-  return errors.reduce((result, { constraints = {}, children = [], property }) => {
-    result = [...result, ...Object.values(constraints).map((constraint) => base + constraint)];
+	return errors.reduce((result, { constraints = {}, children = [], property }) => {
+		result = [...result, ...Object.values(constraints).map((constraint) => base + constraint)];
 
-    if (children.length > 0) {
-      result = [...result, ...getErrorStrings(children, (base += `${property}.`))];
-    }
+		if (children.length > 0) {
+			result = [...result, ...getErrorStrings(children, (base += `${property}.`))];
+		}
 
-    return result;
-  }, []);
+		return result;
+	}, []);
 };
 
 const DEFAULT_VALIDATION_OPTIONS = {
-  forbidUnknownValues: true,
-  whitelist: true,
-  forbidNonWhitelisted: true,
+	forbidNonWhitelisted: true,
+	forbidUnknownValues: true,
+	whitelist: true,
 };
 
 /**
@@ -64,59 +64,59 @@ const DEFAULT_VALIDATION_OPTIONS = {
  * @param {{}} entity
  * @returns {string | undefined}
  */
-export const enumError = (entity: any): string | undefined => {
-  if (!isObject(entity)) return;
-  // eslint-disable-next-line consistent-return
-  return `$property must be one of: ${Object.values(entity).join(', ')}`;
+export const enumError = (entity: object): string | undefined => {
+	if (!isObject(entity)) return;
+
+	return `$property must be one of: ${Object.values(entity).join(', ')}`;
 };
 
 /**
  * @class
  */
 export abstract class ValidatedBase {
-  /**
-   * Perform async validation
-   *
-   * @param {ValidatorOptions} [options]
-   * @returns {Promise<void>}
-   */
-  async validateAsync(options?: ValidatorOptions): Promise<void> {
-    options = { ...options, ...DEFAULT_VALIDATION_OPTIONS };
-    const errors = await validate(this, options);
+	/**
+	 * Perform async validation
+	 *
+	 * @param {ValidatorOptions} [options]
+	 * @returns {Promise<void>}
+	 */
+	async validateAsync(options?: ValidatorOptions): Promise<void> {
+		options = { ...options, ...DEFAULT_VALIDATION_OPTIONS };
+		const errors = await validate(this, options);
 
-    if (errors.length > 0) {
-      const errorStrings = getErrorStrings(errors);
-      throw new Err(errorStrings.join(', '), HTTP_STATUS.BAD_REQUEST);
-    }
-  }
+		if (errors.length > 0) {
+			const errorStrings = getErrorStrings(errors);
+			throw new Err(errorStrings.join(', '), HTTP_STATUS.BAD_REQUEST);
+		}
+	}
 
-  /**
-   * Perform sync validation
-   *
-   * @param {ValidatorOptions} [options]
-   * @returns {void}
-   */
-  validate(options?: ValidatorOptions): void {
-    options = { ...options, ...DEFAULT_VALIDATION_OPTIONS };
-    const errors = validateSync(this, options);
+	/**
+	 * Perform sync validation
+	 *
+	 * @param {ValidatorOptions} [options]
+	 * @returns {void}
+	 */
+	validate(options?: ValidatorOptions): void {
+		options = { ...options, ...DEFAULT_VALIDATION_OPTIONS };
+		const errors = validateSync(this, options);
 
-    if (errors.length > 0) {
-      const errorStrings = getErrorStrings(errors);
-      throw new Err(errorStrings.join(', '), HTTP_STATUS.BAD_REQUEST);
-    }
-  }
+		if (errors.length > 0) {
+			const errorStrings = getErrorStrings(errors);
+			throw new Err(errorStrings.join(', '), HTTP_STATUS.BAD_REQUEST);
+		}
+	}
 
-  /**
-   * Convert model to json
-   *
-   * @param {string[]} [omitProperties=[]]
-   * @returns {{}}
-   */
-  convertToJSON(omitProperties: string[] = []): any {
-    const self = cleanDeep(this, { emptyStrings: false, emptyArrays: false, nullValues: false });
-    const privateKeys = Object.keys(self).filter((key) => key.startsWith('_'));
-    const cleaned = omit(self, ...privateKeys);
+	/**
+	 * Convert model to json
+	 *
+	 * @param {string[]} [omitProperties=[]]
+	 * @returns {{}}
+	 */
+	convertToJSON(omitProperties: string[] = []): object {
+		const self = cleanDeep(this, { emptyArrays: false, emptyStrings: false, nullValues: false });
+		const privateKeys = Object.keys(self).filter((key) => key.startsWith('_'));
+		const cleaned = omit(self, ...privateKeys);
 
-    return JSON.parse(JSON.stringify(omit(cleaned, omitProperties)));
-  }
+		return JSON.parse(JSON.stringify(omit(cleaned, omitProperties)));
+	}
 }
