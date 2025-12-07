@@ -46,7 +46,7 @@
 		"validator": "^13.15.23"
 	},
 	"engines": {
-		"node": ">=22.0.0"
+		"node": ">=25.0.0"
 	},
 	"files": [
 		"dist/**/*.{js,ts,tsbuildinfo}"
